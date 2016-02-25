@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from twitmap import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^search/$', views.search_by_keyword, name='search_by_keyword'),
+    url(r'^search/(?P<keyword>[A_Za-z0-9]+)$', views.search_by_keyword, name='search_by_keyword'),
 ]
