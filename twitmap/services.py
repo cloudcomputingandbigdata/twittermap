@@ -18,3 +18,14 @@ class SearchServices:
         res = self.es.search(self.index, self.doc_type, body)
 
         return res
+
+    def insert_tweet(self, contents, author, timestamp, location):
+        body = {
+            "contents": contents,
+            "author": author,
+            "timestamp": timestamp,
+            "location": location
+        }
+        res = self.es.search(self.index, self.doc_type, body)
+
+        return res
