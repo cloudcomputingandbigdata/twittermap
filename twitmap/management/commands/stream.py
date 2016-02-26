@@ -18,19 +18,18 @@ class Command(BaseCommand):
         #positional arguments
 
         #optional arguments
-        parser.add_argument('--output', action='store_true', dest='output', help='output tweets to twitter.txt')
+        parser.add_argument('--output', action='store_true', dest='output', help='output tweets to twitter.json')
         
     def handle(self, *arg, **options):
         access_token = "YOUR ACCESS TOKEN"
         access_token_secret = "YOUR ACCESS TOKEN SECRET"
-        consumer_key = "CONSUMER KEY"
-        consumer_secret = "CONSUMER SECRET"
-        
+        consumer_key = "YOUR CONSUMER KEY"
+        consumer_secret = "YOUR CONSUMER SECRET"
         listener = TweetListener(**options)
         auth = OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
         stream = Stream(auth, listener)
-        stream.filter(track=['python', 'javascript', 'ruby'])
+        stream.filter(track=['Ruby', 'JavaScript', 'Python'], locations=[-180, -90, 180, 90])
 
 
 class TweetListener(StreamListener):
@@ -38,7 +37,7 @@ class TweetListener(StreamListener):
     def __init__(self, *arg, **options):
         if 'output' in options and options['output']:
             self.orig_stdout = sys.stdout
-            self.output = file('twitter.txt', 'w')
+            self.output = file('twitter.json', 'w')
             sys.stdout = self.output
 
     def on_data(self, data):
@@ -60,6 +59,6 @@ class TweetListener(StreamListener):
         sys.stdout = self.orig_stdout
         self.output.close()
         print status
-        
+
 
 
