@@ -8,6 +8,8 @@ from django.core.management.base import BaseCommand, CommandError
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
+from twitmap.services import SearchServices
+import json
 
 
 class Command(BaseCommand):
@@ -40,7 +42,17 @@ class TweetListener(StreamListener):
             sys.stdout = self.output
 
     def on_data(self, data):
-        print data
+        print(data)
+        ss = SearchServices()
+        data_json = json.loads(data)
+        timestamp = str(data_json['timestamp_ms'])
+        contents = data_json['text']
+        author = data_json['user']['name']
+        location = data_json['user']['location'] #TODO
+        #print(timestamp)
+        #print("timestamp=%s, contents=%s, author=%s, location=%s" % (timestamp, contents, author, location))
+        ss.insert_tweet(contents, author, timestamp, location)
+
         return True
 
     def on_error(self, status):
