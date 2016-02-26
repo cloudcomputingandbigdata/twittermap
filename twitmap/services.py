@@ -6,6 +6,7 @@ class SearchServices:
         self.es = ElasticsearchServices()
         self.index = "tweetmap"
         self.doc_type = "tweets"
+        self.keywords = ["soccer", "football", "messi", "beach", "food", "travel", "photo", "basketball", "nba", "gym"]
 
     def get_results_by_keyword(self, keyword, from_time=None, to_time=None):
         body = {
@@ -83,7 +84,24 @@ class SearchServices:
         #scroll_size = len(page['hits']['hits'])
         #print "scroll size: " + str(scroll_size)
         # Do something with the obtained page
-        return res
+        hits = []
+        for h in res['hits']['hits']:
+            h = h['_source']
+            hit = {
+                "type": "Feature",
+                "geometry": h['location'],
+                "properties": {
+                    "title": h['author'],
+                    "description": h['contents'],
+                    "marker-color": "#fc4353",
+                    "marker-symbol": "monument"
+                }
+            }
+            hits.append(hit)
+
+        output = {"hits": hits}
+
+        return output
 
     def insert_tweet(self, contents, author, timestamp, datetime, location_name, location_type, coordinates, country_code, country):
         location = {

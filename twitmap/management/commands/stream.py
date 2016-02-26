@@ -35,8 +35,6 @@ class Command(BaseCommand):
 class TweetListener(StreamListener):
     """docstring for TweetListener"""
     def __init__(self, *arg, **options):
-        self.keywords = ["soccer", "football", "messi", "beach", "food", "travel", "photo", "basketball", "nba", "gym"]
-
         if 'output' in options and options['output']:
             self.orig_stdout = sys.stdout
             self.output = file('twitter.json', 'w')
@@ -44,12 +42,13 @@ class TweetListener(StreamListener):
 
     def on_data(self, data):
         ss = SearchServices()
+        keywords = ss.keywords
         data_json = json.loads(data)
         try:
             contents = data_json['text']
 
             # if the tweet contains one of the keywords, it will be stored in the index
-            if any(x in contents.lower() for x in self.keywords):
+            if any(x in contents.lower() for x in keywords):
                 if data_json['place'] is not None:
                     location_name = data_json['place']['full_name']
                     location_type = data_json['place']['bounding_box']['type']
