@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+import sys
 
 class ElasticsearchServices:
 
@@ -7,11 +8,17 @@ class ElasticsearchServices:
 
     # body should be in json format
     def feed_data(self, index, doc_type, body):
-        res = self.es.index(
-            index = index,
-            doc_type = doc_type,
-            body = body
-        )
+        res = None
+        try:
+            res = self.es.index(
+                index = index,
+                doc_type = doc_type,
+                body = body
+            )
+        except:
+            for e in sys.exc_info():
+                print "Unexpected error:", e
+            pass
 
         return res
 

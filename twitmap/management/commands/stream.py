@@ -29,29 +29,44 @@ class Command(BaseCommand):
         auth = OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
         stream = Stream(auth, listener)
-        stream.filter(track=['Ruby', 'JavaScript', 'Python'], locations=[-180, -90, 180, 90])
+        stream.filter(locations=[-180, -90, 180, 90])
 
 
 class TweetListener(StreamListener):
     """docstring for TweetListener"""
     def __init__(self, *arg, **options):
+        self.keywords = ["soccer", "football", "messi", "beach", "food", "travel", "photo", "basketball", "nba", "gym"]
+
         if 'output' in options and options['output']:
             self.orig_stdout = sys.stdout
             self.output = file('twitter.json', 'w')
             sys.stdout = self.output
 
     def on_data(self, data):
-        print(data)
         ss = SearchServices()
         data_json = json.loads(data)
-        timestamp = str(data_json['timestamp_ms'])
-        datetime = data_json['created_at']
-        contents = data_json['text']
-        author = data_json['user']['name']
-        location = data_json['user']['location'] #TODO
-        #print(timestamp)
-        #print("timestamp=%s, contents=%s, author=%s, location=%s" % (timestamp, contents, author, location))
-        ss.insert_tweet(contents, author, timestamp, datetime, location)
+        try:
+            contents = data_json['text']
+
+            # if the tweet contains one of the keywords, it will be stored in the index
+            if any(x in contents.lower() for x in self.keywords):
+                if data_json['place'] is not None:
+                    location_name = data_json['place']['full_name']
+                    location_type = data_json['place']['bounding_box']['type']
+                    coordinates = data_json['place']['bounding_box']['coordinates']
+                    country_code = data_json['place']['country_code']
+                    country = data_json['place']['country']
+
+                    timestamp = data_json['timestamp_ms']
+                    datetime = data_json['created_at']
+                    author = data_json['user']['name']
+                    #print(coordinates)
+                    #print("timestamp=%s, contents=%s, author=%s, location=%s" % (timestamp, contents, author, location))
+                    ss.insert_tweet(contents, author, timestamp, datetime, location_name, location_type, coordinates, country_code, country)
+
+                    print(data)
+        except KeyError as e:
+            print e
 
         return True
 
