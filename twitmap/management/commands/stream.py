@@ -46,12 +46,13 @@ class TweetListener(StreamListener):
         ss = SearchServices()
         data_json = json.loads(data)
         timestamp = str(data_json['timestamp_ms'])
+        datetime = data_json['created_at']
         contents = data_json['text']
         author = data_json['user']['name']
         location = data_json['user']['location'] #TODO
         #print(timestamp)
         #print("timestamp=%s, contents=%s, author=%s, location=%s" % (timestamp, contents, author, location))
-        ss.insert_tweet(contents, author, timestamp, location)
+        ss.insert_tweet(contents, author, timestamp, datetime, location)
 
         return True
 
