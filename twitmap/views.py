@@ -1,9 +1,39 @@
 from django.shortcuts import render
-from services import *
+from .services import *
 from django.http import HttpResponse
 from django.http import JsonResponse
 
 # Create your views here.
+def index(request):
+    return render(request, 'twittermap/index.html')
+
+def getkeywords(request):
+    return JsonResponse({
+        "success": True,
+        "results": [
+            {
+                "name"  : "Choice 1",
+                "value" : "value1"
+            },
+            {
+                "name"  : "Choice 2",
+                "value" : "value2"
+            },
+            {
+                "name"  : "Choice 3",
+                "value" : "value3"
+            },
+            {
+                "name"  : "Choice 4",
+                "value" : "value4"
+            },
+            {
+                "name"  : "Choice 5",
+                "value" : "value5"
+            }
+        ]
+    })
+    
 def search_by_keyword(request, keyword = ''):
     if keyword == '':
         return HttpResponse("Please specify the keyword!")

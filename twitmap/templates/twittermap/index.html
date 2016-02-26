@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8 />
+    <title>Twitter Map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.css' rel='stylesheet' />
+    <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+    {% load staticfiles %}
+    <link href="{% static 'twittermap/img/logo.png' %}" rel="shortcut icon">
+    <link rel="stylesheet" type="text/css" href="{% static 'twittermap/css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'twittermap/lib/dist/semantic.min.css' %}">
+    <script type="text/javascript" src="{%static 'twittermap/lib/dist/semantic.min.js' %}"></script>
+</head>
+<body>
+    <div id='map'></div>
+    <div id='search-bar'>
+      <select multiple name="keywords" class="ui search dropdown multiple" id="select">
+        <option value="">Key Words</option>
+      </select>
+    </div> 
+    <script src="{% static 'twittermap/js/mapinit.js' %}"></script>
+</body>
+
+</html>
