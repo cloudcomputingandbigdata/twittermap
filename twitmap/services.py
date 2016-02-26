@@ -26,6 +26,6 @@ class SearchServices:
             "timestamp": timestamp,
             "location": location
         }
-        res = self.es.search(self.index, self.doc_type, body)
+        res = self.es.feed_data(self.index, self.doc_type, body)
 
         return res
