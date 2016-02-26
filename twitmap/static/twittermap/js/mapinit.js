@@ -1,10 +1,34 @@
-$('#select').dropdown({
-  useLabels: true,
-  maxSelections: 10,
-  apiSettings: {
-    url: '/twittermap/keywords'
-  }
-});
+(function(){
+  var selected = [];
+  $('#select').dropdown({
+    useLabels: true,
+    apiSettings: {
+      url: '/twittermap/keywords'
+    },
+    onChange: function(text, value) {
+      $.ajax({
+        type: 'GET',
+        url: '/search/' + value
+      }).done(function(data) {
+        console.log(data);
+        var scroll_id = data._scroll_id;
+        var intervalId = window.setInterval(function() {
+          $.ajax({
+            url: '/scroll/' + scroll_id,
+            type: 'GET'
+          }).done(function(value) {
+            console.log(value);
+            if (value.hits.length === 0) {
+              window.clearInterval(intervalId);
+            } else {
+              mapbox.featureLayer.setGeoJSON(value.hits);
+            }
+          });
+        }, 1000);
+      });
+    }
+  })
+}());
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiaG91bGlhbmdsdiIsImEiOiJjaWwzMjNtcjEzbGdvdWdtM2c4bjNyeG1lIn0.fZxFewEvPi90HGANZnrkyA';
 var geojson = [{
@@ -35,6 +59,6 @@ var geojson = [{
   }
 }];
 
-L.mapbox.map('map', 'houlianglv.p8o27ai7')
-  .setView([37.8, -96], 4)
+var mapbox = L.mapbox.map('map', 'houlianglv.p8o27ai7');
+mapbox.setView([37.8, -96], 4)
   .featureLayer.setGeoJSON(geojson);

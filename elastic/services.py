@@ -6,7 +6,7 @@ class ElasticsearchServices:
 
     def __init__(self):
         self.es = Elasticsearch()
-
+    
     # body should be in json format
     def feed_data(self, index, doc_type, body):
         res = None
