@@ -1,0 +1,18 @@
+{
+  "name": "twitter-map",
+  "version": "0.0.1",
+  "description": "cloud computing assignment",
+  "dependencies": {
+    "browserify": "^13.0.0",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "react-sidebar": "^2.1.1",
+    "reactify": "^1.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "build": "browserify -t reactify ./twitmap/static/twittermap/js/main.js -o ./twitmap/static/twittermap/build/main.min.js"
+  },
+  "author": "<houliang.lu@columbia.edu>",
+  "license": "MIT"
+}

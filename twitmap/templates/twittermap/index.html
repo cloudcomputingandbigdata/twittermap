@@ -6,6 +6,7 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
     <link href='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
     <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
     {% load staticfiles %}
     <link href="{% static 'twittermap/img/logo.png' %}" rel="shortcut icon">
@@ -15,12 +16,13 @@
 </head>
 <body>
     <div id='map'></div>
+    <div id='sidebar'></div>
     <div id='search-bar'>
       <select name="keywords" class="ui search dropdown" id="select">
         <option value="">Please select a keyword</option>
       </select>
     </div> 
-    <script src="{% static 'twittermap/js/mapinit.js' %}"></script>
+    <script src="{% static 'twittermap/build/main.min.js' %}"></script>
 </body>
 
 </html>
