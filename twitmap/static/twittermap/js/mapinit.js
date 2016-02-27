@@ -11,6 +11,10 @@
         url: '/search/' + value
       }).done(function(data) {
         console.log(data);
+
+        // re-initiate the geoJsonLayer
+        geoJsonLayer.clearLayers();
+
         var scroll_id = data._scroll_id;
         var intervalId = window.setInterval(function() {
           $.ajax({
@@ -21,10 +25,10 @@
             if (value.hits.length === 0) {
               window.clearInterval(intervalId);
             } else {
-              mapbox.featureLayer.setGeoJSON(value.hits);
+              geoJsonLayer.addData(value.hits);
             }
           });
-        }, 1000);
+        }, 200);
       });
     }
   })
@@ -59,6 +63,7 @@ var geojson = [{
   }
 }];
 
-var mapbox = L.mapbox.map('map', 'houlianglv.p8o27ai7');
-mapbox.setView([37.8, -96], 4)
-  .featureLayer.setGeoJSON(geojson);
+  var mapbox = L.mapbox.map('map', 'houlianglv.p8o27ai7');
+  mapbox.setView([37.8, -96], 4);
+  //.featureLayer.setGeoJSON(geojson);
+  var geoJsonLayer = L.geoJson().addTo(mapbox);
