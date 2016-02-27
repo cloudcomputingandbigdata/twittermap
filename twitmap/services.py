@@ -34,27 +34,65 @@ class SearchServices:
 
         return res
 
-    def search_scroll(self, keyword, from_time=None, to_time=None):
+    def search_scroll(self, keyword, from_time=None, to_time=None, lat=None, lon=None, distance=None):
         body = {
-            "query": {
-                "filtered": {
-                    "query": {
-                        "query_string": {
-                            "query": "*" + keyword + "*",
-                            "fields": ["contents"]
-                        }
-                    },
-                    "filter": {
-                        "range": {
-                            "timestamp": {
-                                "from": ("0" if from_time is None or from_time == '' else from_time),
-                                "to": ("now" if to_time is None or to_time == '' else to_time)
-                            }
-                        }
+            # "query": {
+            #     "filtered": {
+            #         "query": {
+            #             "query_string": {
+            #                 "query": "*" + keyword + "*",
+            #                 "fields": ["contents"]
+            #             }
+            #         },
+            #         "filter": {
+            #             "range": {
+            #                 "timestamp": {
+            #                     "from": ("0" if from_time is None or from_time == '' else from_time),
+            #                     "to": ("now" if to_time is None or to_time == '' else to_time)
+            #                 }
+            #             }
+            #         }
+            #     }
+            # }
+        }
+        body['query'] = {
+            "filtered" : {
+                "query": {
+                    "query_string": {}
+                },
+                "filter": {
+                    "bool": {
+                        "must": [
+
+                        ]
                     }
                 }
             }
         }
+        body['query']['filtered']['query']['query_string']['query'] = "*" + keyword + "*"
+        body['query']['filtered']['query']['query_string']['fields'] = ['contents']
+        body['query']['filtered']['filter']['bool']['must'].append({
+            "range": {
+                "timestamp": {
+                    "from": ("0" if from_time is None or from_time == '' else from_time),
+                    "to": ("now" if to_time is None or to_time == '' else to_time)
+                }
+            }
+        })
+
+        if lat is not None and lon is not None and distance is not None:
+            body['query']['filtered']['filter']['bool']['must'].append({
+                "geo_distance": {
+                    "distance": distance,
+                    "distance_type": "plane",
+                    "location": {
+                        "lat": lat,
+                        "lon": lon
+                    }
+                }
+            })
+
+        print body
 
         page = self.es.search_scroll(self.index, self.doc_type, body)
         # sid = page['_scroll_id']

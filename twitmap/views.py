@@ -1,7 +1,9 @@
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.shortcuts import render
+
 from services import SearchServices
+
 
 # Create your views here.
 def index(request):
@@ -30,7 +32,10 @@ def search_by_keyword(request, keyword = ''):
     services = SearchServices()
     from_time = request.GET.get("from")
     to_time = request.GET.get("to")
-    output = services.search_scroll(keyword, from_time, to_time)
+    lat = request.GET.get("lat")
+    lon = request.GET.get("lon")
+    distance = request.GET.get("distance") # the format for "distance" should be in human-readable form, such as "2km"
+    output = services.search_scroll(keyword, from_time, to_time, lat, lon, distance)
     return JsonResponse(output)
 
 def scroll_results(request, sid):
