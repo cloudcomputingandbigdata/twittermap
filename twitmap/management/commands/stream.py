@@ -41,29 +41,8 @@ class TweetListener(StreamListener):
             sys.stdout = self.output
 
     def on_data(self, data):
-        ss = SearchServices()
-        keywords = ss.keywords
-        data_json = json.loads(data)
         try:
-            contents = data_json['text']
-
-            # if the tweet contains one of the keywords, it will be stored in the index
-            if any(x in contents.lower() for x in keywords):
-                if data_json['place'] is not None:
-                    location_name = data_json['place']['full_name']
-                    location_type = data_json['place']['bounding_box']['type']
-                    coordinates = data_json['place']['bounding_box']['coordinates']
-                    country_code = data_json['place']['country_code']
-                    country = data_json['place']['country']
-
-                    timestamp = data_json['timestamp_ms']
-                    datetime = data_json['created_at']
-                    author = data_json['user']['name']
-                    #print(coordinates)
-                    #print("timestamp=%s, contents=%s, author=%s, location=%s" % (timestamp, contents, author, location))
-                    ss.insert_tweet(contents, author, timestamp, datetime, location_name, location_type, coordinates, country_code, country)
-
-                    print(data)
+            self.process(data)
         except KeyError as e:
             print e
 
@@ -74,5 +53,40 @@ class TweetListener(StreamListener):
         self.output.close()
         print status
 
+    def process(self, data):
+        ss = SearchServices()
+        keywords = ss.keywords
+        data_json = json.loads(data)
+        contents = data_json['text']
+
+        # if the tweet contains one of the keywords, it will be stored in the index
+        if any(x in contents.lower() for x in keywords):
+            if data_json['place'] is not None:
+                location_name = data_json['place']['full_name']
+                location_type = 'Point'
+                coordinates = data_json['place']['bounding_box']['coordinates']
+                country_code = data_json['place']['country_code']
+                country = data_json['place']['country']
+
+                if coordinates[0] is not None and len(coordinates[0]) > 0:
+                    avg_x = 0
+                    avg_y = 0
+                    for c in coordinates[0]:
+                        avg_x = (avg_x + c[0])
+                        avg_y = (avg_y + c[1])
+                    avg_x /= len(coordinates[0])
+                    avg_y /= len(coordinates[0])
+                    coordinates = [avg_x, avg_y]
+
+                print coordinates
+
+                timestamp = data_json['timestamp_ms']
+                datetime = data_json['created_at']
+                author = data_json['user']['name']
+                #print(coordinates)
+                #print("timestamp=%s, contents=%s, author=%s, location=%s" % (timestamp, contents, author, location))
+                ss.insert_tweet(contents, author, timestamp, datetime, location_name, location_type, coordinates, country_code, country)
+
+                print(data)
 
 

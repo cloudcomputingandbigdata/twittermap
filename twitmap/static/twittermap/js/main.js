@@ -21,14 +21,14 @@ $('#select').dropdown({
             geoJsonLayer.addData(value.hits);
           }
         });
-      }, 2000);
+      }, 200);
     });
   }
 });
 
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiaG91bGlhbmdsdiIsImEiOiJjaWwzMjNtcjEzbGdvdWdtM2c4bjNyeG1lIn0.fZxFewEvPi90HGANZnrkyA';
-var geojson = [{
+/*var geojson = [{
   "type": "Feature",
   "geometry": {
     "type": "Point",
@@ -54,12 +54,18 @@ var geojson = [{
     "marker-size": "large",
     "marker-symbol": "harbor"
   }
-}];
+}];*/
 
 var mapbox = L.mapbox.map('map', 'houlianglv.p8o27ai7');
-mapbox.setView([37.8, -96], 4);
+mapbox.setView([40.71, -74.0059], 4);
 var geoJsonLayer = L.geoJson([], {
   onEachFeature: function(feature, layer) {
-    layer.bindPopup("<div class='tweet-popup'>" + feature.properties.description + "</div>");
+    layer.bindPopup(
+      "<div class='tweet-popup'>" +
+      "<div class='author'>" + feature.properties.title + "</div>" +
+      "<div class='date'>" + feature.properties.datetime + "</div>" +
+      "<div class='contents'>" + feature.properties.description + "</div>" +
+      "</div>"
+    );
   }
 }).addTo(mapbox);

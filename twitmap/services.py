@@ -8,6 +8,7 @@ class SearchServices:
         self.doc_type = "tweets"
         self.keywords = ["soccer", "football", "messi", "beach", "food", "travel", "photo", "basketball", "nba", "gym"]
 
+    # This method is only for testing
     def get_results_by_keyword(self, keyword, from_time=None, to_time=None):
         body = {
             "query": {
@@ -89,10 +90,14 @@ class SearchServices:
             h = h['_source']
             hit = {
                 "type": "Feature",
-                "geometry": h['location'],
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": h['location']
+                },
                 "properties": {
                     "title": h['author'],
                     "description": h['contents'],
+                    "datetime": h['datetime'],
                     "marker-color": "#fc4353",
                     "marker-symbol": "monument"
                 }
@@ -104,18 +109,13 @@ class SearchServices:
         return output
 
     def insert_tweet(self, contents, author, timestamp, datetime, location_name, location_type, coordinates, country_code, country):
-        location = {
-            "type": location_type,
-            "coordinates": coordinates
-        }
-        #print location
         body = {
             "contents": contents,
             "author": author,
             "timestamp": timestamp,
             "datetime": datetime,
             "location_name": location_name,
-            "location": location,
+            "location": coordinates,
             "country_code": country_code,
             "country": country
         }
