@@ -1,30 +1,6 @@
-var tweetLoader = require('./tweetLoader');
-
-
-$('#select').dropdown({
-  useLabels: true,
-  apiSettings: {
-    url: '/twittermap/keywords'
-  },
-  onChange: function(text, value) {
-    tweetLoader.loadByKeyword(value).done(function(data) {
-      console.log(data);
-      // re-initiate the geoJsonLayer
-      geoJsonLayer.clearLayers();
-      var scroll_id = data._scroll_id;
-      var intervalId = window.setInterval(function() {
-        tweetLoader.scroll(scroll_id).done(function(value) {
-          console.log(value);
-          if (value.hits.length === 0) {
-            window.clearInterval(intervalId);
-          } else {
-            geoJsonLayer.addData(value.hits);
-          }
-        });
-      }, 200);
-    });
-  }
-});
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TwitterMapController = require('./TwitterMapController');
 
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiaG91bGlhbmdsdiIsImEiOiJjaWwzMjNtcjEzbGdvdWdtM2c4bjNyeG1lIn0.fZxFewEvPi90HGANZnrkyA';
@@ -41,3 +17,6 @@ var geoJsonLayer = L.geoJson([], {
     );
   }
 }).addTo(mapbox);
+
+ReactDOM.render(<TwitterMapController mapbox={mapbox} geoJsonLayer={geoJsonLayer} />, 
+  document.getElementById('twittermap-controller'));
