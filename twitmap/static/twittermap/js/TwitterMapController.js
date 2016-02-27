@@ -16,6 +16,7 @@ var TwitterMapController = React.createClass({
 
   componentDidMount() {
     this.pointsLayer = null;
+
   },
 
   componentDidUpdate() {
@@ -44,7 +45,7 @@ var TwitterMapController = React.createClass({
     tweets.forEach(function(tweet) {
       var coords = tweet.geometry.coordinates;
       var url = "";
-      //var url = "http://twitter.com/" + user + "/status/" + tweet.properties.tweet_id;
+      //var url = "http://twitter.com/" + tweet.properties.screen_name + "/status/" + tweet.properties.tweet_id;
       var text = "<div class='author'><strong>" + tweet.properties.title + "</strong></div>" +
       "<div class='date'>" + tweet.properties.datetime + "</div>" + 
       "<div class='contents'>" + tweet.properties.description + "</div>" +
@@ -66,9 +67,12 @@ var TwitterMapController = React.createClass({
 
   },
 
-  onFilterValueChanged(text, value) {
-    console.log('value changed: ' + value);
-    var that = this;
+  onFilterValueChanged(option) {
+    console.log('value changed: ' + option.value);
+    //set the keyword
+    //this.setState({keyword: value});
+    var that = this,
+    value = option.value;
     tweetLoader.loadByKeyword(value).done(function(data) {
       console.log(data);
       var scroll_id = data._scroll_id;
@@ -79,7 +83,7 @@ var TwitterMapController = React.createClass({
           if (value.hits.length === 0) {
             window.clearInterval(intervalId);
             that.setState({
-              tweets: that.state.tweets.concat(tweets)
+              tweets: tweets
             });
           } else {
             tweets = tweets.concat(value.hits);

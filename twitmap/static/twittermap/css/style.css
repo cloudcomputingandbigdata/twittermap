@@ -10,9 +10,10 @@ body {
 }
 
 #twittermap-controller{
+	width: 20em;
 	position: fixed;
 	top: 1em;
-	left: 70%;
+	right: 1em;
 }
 
 .tweet-cluster-icon {
