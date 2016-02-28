@@ -63,7 +63,7 @@ class TweetListener(StreamListener):
         if any(x in contents.lower() for x in keywords):
             if data_json['place'] is not None:
                 location_name = data_json['place']['full_name']
-                location_type = 'Point'
+                #location_type = 'Point'
                 coordinates = data_json['place']['bounding_box']['coordinates']
                 country_code = data_json['place']['country_code']
                 country = data_json['place']['country']
@@ -83,9 +83,10 @@ class TweetListener(StreamListener):
                 timestamp = data_json['timestamp_ms']
                 datetime = data_json['created_at']
                 author = data_json['user']['name']
+                id = data_json['id']
                 #print(coordinates)
                 #print("timestamp=%s, contents=%s, author=%s, location=%s" % (timestamp, contents, author, location))
-                ss.insert_tweet(contents, author, timestamp, datetime, location_name, location_type, coordinates, country_code, country)
+                ss.insert_tweet(id, contents, author, timestamp, datetime, location_name, coordinates, country_code, country)
 
                 print(data)
 
