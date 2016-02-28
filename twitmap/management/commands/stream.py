@@ -83,10 +83,11 @@ class TweetListener(StreamListener):
                 timestamp = data_json['timestamp_ms']
                 datetime = data_json['created_at']
                 author = data_json['user']['name']
-                id = data_json['id']
+                screen_name = data_json['user']['screen_name']
+                id = data_json['id_str']
                 #print(coordinates)
                 #print("timestamp=%s, contents=%s, author=%s, location=%s" % (timestamp, contents, author, location))
-                ss.insert_tweet(id, contents, author, timestamp, datetime, location_name, coordinates, country_code, country)
+                ss.insert_tweet(id, contents, author, screen_name, timestamp, datetime, location_name, coordinates, country_code, country)
 
                 print(data)
 

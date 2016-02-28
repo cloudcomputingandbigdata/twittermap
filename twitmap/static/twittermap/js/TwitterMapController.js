@@ -44,8 +44,7 @@ var TwitterMapController = React.createClass({
 
     tweets.forEach(function(tweet) {
       var coords = tweet.geometry.coordinates;
-      var url = "";
-      //var url = "http://twitter.com/" + tweet.properties.screen_name + "/status/" + tweet.properties.tweet_id;
+      var url = "http://twitter.com/" + tweet.properties.screen_name + "/status/" + tweet.properties.tweet_id;
       var text = "<div class='author'><strong>" + tweet.properties.title + "</strong></div>" +
       "<div class='date'>" + tweet.properties.datetime + "</div>" + 
       "<div class='contents'>" + tweet.properties.description + "</div>" +

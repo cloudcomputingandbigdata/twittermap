@@ -137,8 +137,7 @@ class SearchServices:
                     "description": h['contents'],
                     "datetime": h['datetime'],
                     "tweet_id": h['tweet_id'],
-                    "marker-color": "#fc4353",
-                    "marker-symbol": "monument"
+                    "screen_name": h['screen_name']
                 }
             }
             hits.append(hit)
@@ -147,11 +146,12 @@ class SearchServices:
 
         return output
 
-    def insert_tweet(self, id, contents, author, timestamp, datetime, location_name, coordinates, country_code, country):
+    def insert_tweet(self, id, contents, author, screen_name, timestamp, datetime, location_name, coordinates, country_code, country):
         body = {
             "tweet_id": id,
             "contents": contents,
             "author": author,
+            "screen_name": screen_name,
             "timestamp": timestamp,
             "datetime": datetime,
             "location_name": location_name,
