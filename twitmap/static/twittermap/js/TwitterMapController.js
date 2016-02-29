@@ -1,5 +1,7 @@
 var React = require('react');
 var Keywordfilter = require('./Keywordfilter');
+var Timefilter = require('./Timefilter');
+var DropPin = require('./DropPin');
 var tweetLoader = require('./TweetLoader');
 
 var TwitterMapController = React.createClass({
@@ -10,13 +12,20 @@ var TwitterMapController = React.createClass({
   getInitialState() {
     return {
       tweets: [],
-      keyword: null
+      keyword: null,
+      mode: "all",
+      time: null,
+      unit: null,
+      distance: 10,
+      show_pin: false,
+      lat: null,
+      lon: null
     }
   },
 
   componentDidMount() {
     this.pointsLayer = null;
-
+    this.pin = null;
   },
 
   componentDidUpdate() {
@@ -66,35 +75,145 @@ var TwitterMapController = React.createClass({
 
   },
 
-  onFilterValueChanged(option) {
-    console.log('value changed: ' + option.value);
-    //set the keyword
-    //this.setState({keyword: value});
-    var that = this,
-    value = option.value;
-    tweetLoader.loadByKeyword(value).done(function(data) {
-      console.log(data);
-      var scroll_id = data._scroll_id;
-      var tweets = [];
-      var intervalId = window.setInterval(function() {
-        tweetLoader.scroll(scroll_id).done(function(value) {
-          console.log(value);
-          if (value.hits.length === 0) {
-            window.clearInterval(intervalId);
-            that.setState({
-              tweets: tweets
-            });
-          } else {
-            tweets = tweets.concat(value.hits);
+  showPin() {
+    self = this;
+    var mapbox = this.props.mapbox;
+    this.pin = L.marker([40.71, -74.0059], {
+      icon: L.mapbox.marker.icon({
+        'marker-color': '#f86767'
+      }),
+      draggable: true
+    }).addTo(mapbox);
+    this.pin.on('dragend', ondragend);
+    ondragend();
+
+    function ondragend() {
+        var m = self.pin.getLatLng();
+        console.log('Latitude: ' + m.lat + ', Longitude: ' + m.lng);
+        self.setState({
+          lat: m.lat,
+          lon: m.lng
+        }, function() {
+          var parameters = {};
+          if (self.state.keyword) {
+            self.loadResults(self.state.keyword);
           }
         });
-      }, 200);
+    }
+  },
+
+  removePin() {
+    var mapbox = this.props.mapbox;
+    mapbox.removeLayer(this.pin);
+  },
+
+  onFilterValueChanged(option) {
+    console.log('value changed: ' + option.value);
+    self = this;
+
+    this.setState({keyword: option.value}, function() {
+      //var updateFrequency = window.setInterval(function() {
+      self.loadResults(self.state.keyword);
+      //}, 10000);
+    });
+
+  },
+
+  buildParameters(parameters) {
+    if (this.state.mode == 'all') {
+
+    } else {
+      var time = this.state.time;
+      var unit = this.state.unit;
+      if (time && unit && time > 0) {
+        parameters['from'] = "now-" + time + unit;
+        parameters['to'] = "now";
+      }
+    }
+
+    //console.log('show_pin: ' + this.state.show_pin);
+    if (this.state.show_pin) {
+      var distance = this.state.distance;
+      var lat = this.state.lat;
+      var lon = this.state.lon;
+      //console.log('distance: ' + distance + ', lat: ' + lat + ', lon: ' + lon);
+      if (distance && (lat && lon) && distance > 0) {
+        parameters['distance'] = distance + 'km';
+        parameters['lat'] = lat;
+        parameters['lon'] = lon;
+      }
+    }
+  },
+
+  loadResults(keyword) {
+    self = this;
+    var parameters = {};
+    this.buildParameters(parameters);
+    tweetLoader.loadByKeyword(keyword, parameters).done(function(data) { //TODO: should we still do the loading every 20 seconds?
+      console.log(data);
+      var scroll_id = data._scroll_id;
+      var total = data.hits.total;
+      var tweets = [];
+      if (total > 0) {
+        var intervalId = window.setInterval(function() { //TODO: maybe should not use setInterval, since if the distance is huge, the search needs more time
+          tweetLoader.scroll(scroll_id).done(function(value) {
+            console.log(value);
+            if (value.hits.length === 0) {
+              window.clearInterval(intervalId);
+              self.setState({
+                tweets: tweets
+              });
+            } else {
+              tweets = tweets.concat(value.hits);
+            }
+          });
+        }, 200);
+      } else {
+        self.setState({
+          tweets: tweets
+        });
+      }
+    });
+  },
+
+  onTimeUnitValueChanged(option) {
+    console.log('time unit changed:' + option.value);
+    this.setState({unit: option.value});
+  },
+
+  onTimeChanged(value) {
+    console.log('time changed:' + value);
+    this.setState({time: value});
+  },
+
+  onModeChanged(value) {
+    console.log('mode changed:' + value);
+    this.setState({mode: value});
+  },
+
+  onDistanceChanged(value) {
+    console.log('distance changed:' + value);
+    this.setState({distance: value});
+  },
+
+  onPinStatusChanged(value) {
+    console.log('show pin? ' + value);
+    this.setState({show_pin: value}, function() {
+      if (value) {
+        this.showPin();
+      } else {
+        this.removePin();
+      }
     });
   },
 
   render() {
-    return ( 
-      <Keywordfilter onChange = {this.onFilterValueChanged}/>
+    return ( //TODO: definitely need to make this panel look better :)
+      <div>
+        <Keywordfilter onChange = {this.onFilterValueChanged}/>
+        <Timefilter onUnitChange = {this.onTimeUnitValueChanged} onModeChange = {this.onModeChanged} onTimeChange = {this.onTimeChanged} /> //TODO: probably need a "Update" button for this
+        <DropPin onPinStatusChange = {this.onPinStatusChanged} onDistanceChange = {this.onDistanceChanged} /> //TODO: should "loadResults" be triggered when the distance is changed?
+      </div>
     )
   }
 });

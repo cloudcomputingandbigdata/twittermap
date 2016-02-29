@@ -1,9 +1,10 @@
 var tweetLoader = {};
-tweetLoader.loadByKeyword = function(keyword) {
+tweetLoader.loadByKeyword = function(keyword, data) {
   var dtd = $.Deferred();
   $.ajax({
     url: "/search/" + keyword,
-    type: 'GET'
+    type: 'GET',
+    data: data,
   }).done(function(data) {
     dtd.resolve(data);
   })
