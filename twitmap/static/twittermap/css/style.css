@@ -137,8 +137,11 @@ body {
     transition: transform ease 350ms;
     border: 1px solid rgba(0, 0, 0, 0.4);
     border-right: none;
-    padding: 5px;
+    padding: 5px 10px;
     background-color: #fff;
+}
+.menu-container > div.bars:hover {
+  cursor: pointer;
 }
 
 .menu-container > div.bars.right {
