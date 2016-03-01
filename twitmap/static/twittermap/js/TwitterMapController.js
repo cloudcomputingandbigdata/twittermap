@@ -21,7 +21,8 @@ var TwitterMapController = React.createClass({
       distance: 10,
       show_pin: false,
       lat: null,
-      lon: null
+      lon: null,
+      updateFrequency: null
     }
   },
 
@@ -152,34 +153,38 @@ var TwitterMapController = React.createClass({
     var self = this;
     var parameters = {};
     if (self.state.keyword) {
+      if (this.state.updateFrequency != null) window.clearInterval(this.state.updateFrequency);
       this.buildParameters(parameters);
-      tweetLoader.loadByKeyword(keyword, parameters).done(function(data) { /*TODO: should we still do the loading every 20 seconds?*/
-        console.log(data);
-        var scroll_id = data._scroll_id;
-        var total = data.hits.total;
-        var tweets = [];
-        if (total > 0) {
-          $('.menu').addClass("overlay");
-          var intervalId = window.setInterval(function() { /*TODO: maybe should not use setInterval, since if the distance is huge, the search needs more time*/
-            tweetLoader.scroll(scroll_id).done(function(value) {
-              console.log(value);
-              if (value.hits.length === 0) {
-                window.clearInterval(intervalId);
-                $('.menu').removeClass('overlay');
-                self.setState({
-                  tweets: tweets
-                });
-              } else {
-                tweets = tweets.concat(value.hits);
-              }
+      this.state.updateFrequency = window.setInterval(function updateTweets() { // update every 15 seconds
+        tweetLoader.loadByKeyword(keyword, parameters).done(function(data) {
+          console.log(data);
+          var scroll_id = data._scroll_id;
+          var total = data.hits.total;
+          var tweets = [];
+          if (total > 0) {
+            $('.menu').addClass("overlay");
+            var intervalId = window.setInterval(function() { /*TODO: maybe should not use setInterval, since if the distance is huge, the search needs more time*/
+              tweetLoader.scroll(scroll_id).done(function(value) {
+                console.log(value);
+                if (value.hits.length === 0) {
+                  window.clearInterval(intervalId);
+                  $('.menu').removeClass('overlay');
+                  self.setState({
+                    tweets: tweets
+                  });
+                } else {
+                  tweets = tweets.concat(value.hits);
+                }
+              });
+            }, 200);
+          } else {
+            self.setState({
+              tweets: tweets
             });
-          }, 200);
-        } else {
-          self.setState({
-            tweets: tweets
-          });
-        }
-      });
+          }
+        });
+        return updateTweets;
+      }(), 15000);
     }
   },
 
