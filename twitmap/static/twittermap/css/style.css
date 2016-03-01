@@ -62,12 +62,29 @@ body {
   -ms-transition: transform ease 350ms;
   -o-transition: transform ease 350ms;
   transition: transform ease 350ms;
-  padding: 15px;
   border: 1px solid rgba(0, 0, 0, 0.4);
+}
+.menu-container > div.menu > .main{
+  padding: 15px;
+}
+.menu-container > div.menu > .header {
+  color: white;
+  background-color: #50c9f1;
+  padding: 5px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
 }
 .menu-container > div.menu.left {
   background: white;
   left: -350px;
+}
+.menu-container > div.menu > .footer {
+  color: white;
+  background-color: #323a45;
+  padding: 5px;
+  margin-top: 10px;
+  /* border-top: 1px solid rgba(0, 0, 0, 0.4); */
+  font-size: 9px;
 }
 .menu-container > div.menu.visible.left {
   transform: translate3d(350px, 0, 0);

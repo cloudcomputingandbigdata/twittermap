@@ -239,8 +239,7 @@ var TwitterMapController = React.createClass({
   render() {
     return (
       <div>
-        <Menu ref="right" alignment="right">
-          <div className="header"></div>
+        <Menu ref="right" alignment="right" header={"TwittMap"} footer={"Developed by Yue Cen & Houliang Lu"}>
           <div className="keyword-container">
             <Keywordfilter onChange = {this.onFilterValueChanged}/>
           </div>
@@ -254,7 +253,6 @@ var TwitterMapController = React.createClass({
               <DropPin onPinStatusChange = {this.onPinStatusChanged} onDistanceChange = {this.onDistanceChanged} />
             </Accordion>
           </div>
-          <div className="footer"></div>
         </Menu>
       </div>
     )

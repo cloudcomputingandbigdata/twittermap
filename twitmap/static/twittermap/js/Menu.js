@@ -3,7 +3,7 @@ var React = require('react');
 var Menu = React.createClass({
   getInitialState: function() {
     return {
-      visible: false
+      visible: true
     };
   },
 
@@ -18,7 +18,12 @@ var Menu = React.createClass({
           <div className={"bars " + (this.state.visible ? "visible " : "") + this.props.alignment} onClick={this.toggle}>
             <i className={"fa " + (this.state.visible ? "fa-chevron-right " : "fa-chevron-left ") + "fa-3"}></i>
           </div>
-          <div className={"menu " + (this.state.visible ? "visible " : "") + this.props.alignment}>{this.props.children}</div>
+          <div className={"menu " + (this.state.visible ? "visible " : "") + this.props.alignment}>
+            <div className="header"><b>{this.props.header}</b></div>
+            <div className="main">{this.props.children}</div>
+            <div className="footer">{this.props.footer}</div>
+          </div>
+
         </div>
       </div>
     )
