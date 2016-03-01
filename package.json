@@ -15,5 +15,9 @@
     "build": "browserify -t reactify ./twitmap/static/twittermap/js/main.js -o ./twitmap/static/twittermap/build/main.min.js"
   },
   "author": "<houliang.lu@columbia.edu>",
+  "contributors": [{
+    "name": "Yue Cen",
+    "email": "yc3171@columbia.edu"
+  }],
   "license": "MIT"
 }

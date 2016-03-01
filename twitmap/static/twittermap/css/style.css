@@ -9,11 +9,11 @@ body {
 	width: 100%;
 }
 
-#twittermap-controller{
-	width: 20em;
+#twittermap-controller {
+	/*width: 20em;
 	position: fixed;
 	top: 1em;
-	right: 1em;
+	right: 1em;*/
 }
 
 .tweet-cluster-icon {
@@ -39,4 +39,125 @@ body {
     text-align: center;
     border-radius: 25px;
     color: white;
+}
+
+/* Menu */
+.menu-container {
+  display: block;
+}
+.menu-container > div.menu {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  width: 350px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-transition: -webkit-transform ease 350ms;
+  -moz-transition: -webkit-transform ease 350ms;
+  -ms-transition: -webkit-transform ease 350ms;
+  -o-transition: -webkit-transform ease 350ms;
+  transition: -webkit-transform ease 350ms;
+  -webkit-transition: transform ease 350ms;
+  -moz-transition: transform ease 350ms;
+  -ms-transition: transform ease 350ms;
+  -o-transition: transform ease 350ms;
+  transition: transform ease 350ms;
+  padding: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}
+.menu-container > div.menu.left {
+  background: white;
+  left: -350px;
+}
+.menu-container > div.menu.visible.left {
+  transform: translate3d(350px, 0, 0);
+  -ms-transform: translate3d(350px, 0, 0);
+  -webkit-transform: translate3d(350px, 0, 0);
+  -o-transform: translate3d(350px, 0, 0);
+  -moz-transform: translate3d(350px, 0, 0);
+}
+.menu-container > div.menu.right {
+  background: white;
+  right: -350px;
+}
+.menu-container > div.menu.visible.right {
+  transform: translate3d(-350px, 0, 0);
+  -ms-transform: translate3d(-350px, 0, 0);
+  -webkit-transform: translate3d(-350px, 0, 0);
+  -o-transform: translate3d(-350px, 0, 0);
+  -moz-transform: translate3d(-350px, 0, 0);
+}
+.menu-container > div > .menu-item {
+  float: left;
+  width: 100%;
+  margin: 0;
+  padding: 10px 15px;
+  border-bottom: solid 1px #555;
+  cursor: pointer;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  color: #B0B0B0;
+}
+.menu-container > div > .menu-item:hover {
+  color: #F0F0F0;
+}
+
+.menu-container > div.bars {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-transition: -webkit-transform ease 350ms;
+    -moz-transition: -webkit-transform ease 350ms;
+    -ms-transition: -webkit-transform ease 350ms;
+    -o-transition: -webkit-transform ease 350ms;
+    transition: -webkit-transform ease 350ms;
+    -webkit-transition: transform ease 350ms;
+    -moz-transition: transform ease 350ms;
+    -ms-transition: transform ease 350ms;
+    -o-transition: transform ease 350ms;
+    transition: transform ease 350ms;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    border-right: none;
+    padding: 5px;
+    background-color: #fff;
+}
+
+.menu-container > div.bars.right {
+    right: 0px;
+}
+.menu-container > div.bars.visible.right {
+  transform: translate3d(-350px, 0, 0);
+  -ms-transform: translate3d(-350px, 0, 0);
+  -webkit-transform: translate3d(-350px, 0, 0);
+  -o-transform: translate3d(-350px, 0, 0);
+  -moz-transform: translate3d(-350px, 0, 0);
+}
+
+.menu .accordion {
+  margin-top: 20px;
+}
+
+.menu .footer {
+  height: 16px;
+}
+.menu .footer.loadinggif {
+    background: url('http://www.hsi.com.hk/HSI-Net/pages/images/en/share/ajax-loader.gif') no-repeat;
+}
+
+/* Time filter */
+.time-filter {
+  margin-left: 20px;
+}
+.time-filter label span {
+  margin-left: 5px;
+}
+.time-filter .time-units {
+
+}
+
+/* Drop pin */
+.drop-pin {
+  margin-left: 20px;
 }

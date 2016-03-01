@@ -3,6 +3,8 @@ var Keywordfilter = require('./Keywordfilter');
 var Timefilter = require('./Timefilter');
 var DropPin = require('./DropPin');
 var tweetLoader = require('./TweetLoader');
+var Menu = require('./Menu');
+var Accordion = require('./Accordion');
 
 var TwitterMapController = React.createClass({
   propTypes: {
@@ -76,7 +78,7 @@ var TwitterMapController = React.createClass({
   },
 
   showPin() {
-    self = this;
+    var self = this;
     var mapbox = this.props.mapbox;
     this.pin = L.marker([40.71, -74.0059], {
       icon: L.mapbox.marker.icon({
@@ -105,13 +107,14 @@ var TwitterMapController = React.createClass({
   removePin() {
     var mapbox = this.props.mapbox;
     mapbox.removeLayer(this.pin);
+    this.loadResults(this.state.keyword);
   },
 
-  onFilterValueChanged(option) {
-    console.log('value changed: ' + option.value);
-    self = this;
+  onFilterValueChanged(value) {
+    console.log('value changed: ' + value);
+    var self = this;
 
-    this.setState({keyword: option.value}, function() {
+    this.setState({keyword: value}, function() {
       //var updateFrequency = window.setInterval(function() {
       self.loadResults(self.state.keyword);
       //}, 10000);
@@ -146,54 +149,78 @@ var TwitterMapController = React.createClass({
   },
 
   loadResults(keyword) {
-    self = this;
+    var self = this;
     var parameters = {};
-    this.buildParameters(parameters);
-    tweetLoader.loadByKeyword(keyword, parameters).done(function(data) { //TODO: should we still do the loading every 20 seconds?
-      console.log(data);
-      var scroll_id = data._scroll_id;
-      var total = data.hits.total;
-      var tweets = [];
-      if (total > 0) {
-        var intervalId = window.setInterval(function() { //TODO: maybe should not use setInterval, since if the distance is huge, the search needs more time
-          tweetLoader.scroll(scroll_id).done(function(value) {
-            console.log(value);
-            if (value.hits.length === 0) {
-              window.clearInterval(intervalId);
-              self.setState({
-                tweets: tweets
-              });
-            } else {
-              tweets = tweets.concat(value.hits);
-            }
+    if (self.state.keyword) {
+      this.buildParameters(parameters);
+      tweetLoader.loadByKeyword(keyword, parameters).done(function(data) { /*TODO: should we still do the loading every 20 seconds?*/
+        console.log(data);
+        var scroll_id = data._scroll_id;
+        var total = data.hits.total;
+        var tweets = [];
+        if (total > 0) {
+          $('.footer').addClass("loadinggif");
+          var intervalId = window.setInterval(function() { /*TODO: maybe should not use setInterval, since if the distance is huge, the search needs more time*/
+            tweetLoader.scroll(scroll_id).done(function(value) {
+              console.log(value);
+              if (value.hits.length === 0) {
+                window.clearInterval(intervalId);
+                $('.footer').removeClass('loadinggif');
+                self.setState({
+                  tweets: tweets
+                });
+              } else {
+                tweets = tweets.concat(value.hits);
+              }
+            });
+          }, 200);
+        } else {
+          self.setState({
+            tweets: tweets
           });
-        }, 200);
-      } else {
-        self.setState({
-          tweets: tweets
-        });
-      }
-    });
+        }
+      });
+    }
   },
 
-  onTimeUnitValueChanged(option) {
-    console.log('time unit changed:' + option.value);
-    this.setState({unit: option.value});
+  onTimeUnitValueChanged(value) {
+    console.log('time unit changed:' + value);
+    var self = this;
+    this.setState({unit: value}, function() {
+      //var updateFrequency = window.setInterval(function() {
+      self.loadResults(self.state.keyword);
+      //}, 10000);
+    });
   },
 
   onTimeChanged(value) {
     console.log('time changed:' + value);
-    this.setState({time: value});
+    var self = this;
+    this.setState({time: value}, function() {
+      //var updateFrequency = window.setInterval(function() {
+      self.loadResults(self.state.keyword);
+      //}, 10000);
+    });
   },
 
   onModeChanged(value) {
     console.log('mode changed:' + value);
-    this.setState({mode: value});
+    var self = this;
+    this.setState({mode: value}, function() {
+      //var updateFrequency = window.setInterval(function() {
+      self.loadResults(self.state.keyword);
+      //}, 10000);
+    });
   },
 
   onDistanceChanged(value) {
     console.log('distance changed:' + value);
-    this.setState({distance: value});
+    var self = this;
+    this.setState({distance: value}, function() {
+      //var updateFrequency = window.setInterval(function() {
+      self.loadResults(self.state.keyword);
+      //}, 10000);
+    });
   },
 
   onPinStatusChanged(value) {
@@ -210,9 +237,23 @@ var TwitterMapController = React.createClass({
   render() {
     return ( //TODO: definitely need to make this panel look better :)
       <div>
-        <Keywordfilter onChange = {this.onFilterValueChanged}/>
-        <Timefilter onUnitChange = {this.onTimeUnitValueChanged} onModeChange = {this.onModeChanged} onTimeChange = {this.onTimeChanged} /> //TODO: probably need a "Update" button for this
-        <DropPin onPinStatusChange = {this.onPinStatusChanged} onDistanceChange = {this.onDistanceChanged} /> //TODO: should "loadResults" be triggered when the distance is changed?
+        <Menu ref="right" alignment="right">
+          <div className="header"></div>
+          <div className="keyword-container">
+            <Keywordfilter onChange = {this.onFilterValueChanged}/>
+          </div>
+          <div className="time-container">
+            <Accordion title={"Time range filter"}>
+              <Timefilter onUnitChange = {this.onTimeUnitValueChanged} onModeChange = {this.onModeChanged} onTimeChange = {this.onTimeChanged} />
+            </Accordion>
+          </div>
+          <div className="drop-pin-container">
+            <Accordion title={"Distance range filter"}>
+              <DropPin onPinStatusChange = {this.onPinStatusChanged} onDistanceChange = {this.onDistanceChanged} />
+            </Accordion>
+          </div>
+          <div className="footer"></div>
+        </Menu>
       </div>
     )
   }

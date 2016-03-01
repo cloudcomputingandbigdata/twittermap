@@ -16,16 +16,18 @@ var Keywordfilter = React.createClass({
   getDefaultProps() {
     return {
       keywords: ["football", "messi", "beach", "food", "travel",
-        "photo", "basketball", "nba", "gym"
+        "photo", "basketball", "nba", "gym", "soccer"
       ]
     };
   },
 
   handleChange(val) {
+    var self = this;
     this.setState({
-      selectedKeyword: val.value
+      selectedKeyword: val != null ? val.value : null
+    }, function() {
+      self.props.onChange(self.state.selectedKeyword);
     });
-    this.props.onChange(val);
   },
 
   render() {
@@ -36,8 +38,8 @@ var Keywordfilter = React.createClass({
       }
     });
     var selectedKeyword = this.state.selectedKeyword;
-    return <Select name = "form-field-name"
-    options = {options} value = {selectedKeyword} onChange = {this.handleChange} />
+    return <Select name = "form-field-name" className="keyword-selector"
+    options = {options} value = {selectedKeyword} onChange = {this.handleChange} placeholder={"Please select a keyword..."} />
   }
 });
 

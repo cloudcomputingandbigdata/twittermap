@@ -29,11 +29,16 @@ var DropPin = React.createClass({
   render() {
     return (
       <div className="drop-pin">
-        <label>
-          <input type="checkbox" value={this.state.show_pin} checked={this.state.show_pin} onClick={this.handleClick} />
-          <span>Click here to drop a pin!</span>
-        </label>
-        <input type="number" defaultValue={this.state.distance} onChange={this.handleDistance} disabled={this.state.show_pin == false} />
+        <div className="ui checkbox">
+          <input value={this.state.show_pin} checked={this.state.show_pin} onClick={this.handleClick} type="checkbox" />
+          <label>Drop a pin and show results within</label>
+        </div>
+        <div className="ui right labeled input">
+          <input type="number" defaultValue={this.state.distance} onChange={this.handleDistance} disabled={this.state.show_pin == false} />
+          <div className="ui basic label">
+            km
+          </div>
+        </div>
       </div>
     )
   }
