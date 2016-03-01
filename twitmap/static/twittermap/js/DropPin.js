@@ -1,4 +1,5 @@
 var React = require('react');
+var ToggleDisplay = require('react-toggle-display');
 
 var DropPin = React.createClass({
   propTypes: {
@@ -39,6 +40,9 @@ var DropPin = React.createClass({
             km
           </div>
         </div>
+        <ToggleDisplay show={this.state.distance <= 0 || this.state.distance > 200}>
+          <div className="warning">*The value must be between 0 and 200.</div>
+        </ToggleDisplay>
       </div>
     )
   }

@@ -17,7 +17,7 @@ var TwitterMapController = React.createClass({
       keyword: null,
       mode: "all",
       time: null,
-      unit: null,
+      unit: "m",
       distance: 10,
       show_pin: false,
       lat: null,
@@ -159,13 +159,13 @@ var TwitterMapController = React.createClass({
         var total = data.hits.total;
         var tweets = [];
         if (total > 0) {
-          $('.footer').addClass("loadinggif");
+          $('.menu').addClass("overlay");
           var intervalId = window.setInterval(function() { /*TODO: maybe should not use setInterval, since if the distance is huge, the search needs more time*/
             tweetLoader.scroll(scroll_id).done(function(value) {
               console.log(value);
               if (value.hits.length === 0) {
                 window.clearInterval(intervalId);
-                $('.footer').removeClass('loadinggif');
+                $('.menu').removeClass('overlay');
                 self.setState({
                   tweets: tweets
                 });
@@ -198,7 +198,8 @@ var TwitterMapController = React.createClass({
     var self = this;
     this.setState({time: value}, function() {
       //var updateFrequency = window.setInterval(function() {
-      self.loadResults(self.state.keyword);
+      if (value > 0)
+        self.loadResults(self.state.keyword);
       //}, 10000);
     });
   },
@@ -218,7 +219,8 @@ var TwitterMapController = React.createClass({
     var self = this;
     this.setState({distance: value}, function() {
       //var updateFrequency = window.setInterval(function() {
-      self.loadResults(self.state.keyword);
+      if (value > 0 && value <= 200)
+        self.loadResults(self.state.keyword);
       //}, 10000);
     });
   },
@@ -235,7 +237,7 @@ var TwitterMapController = React.createClass({
   },
 
   render() {
-    return ( //TODO: definitely need to make this panel look better :)
+    return (
       <div>
         <Menu ref="right" alignment="right">
           <div className="header"></div>

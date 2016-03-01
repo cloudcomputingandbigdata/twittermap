@@ -1,5 +1,6 @@
 var React = require('react');
 var Select = require('react-select');
+var ToggleDisplay = require('react-toggle-display');
 
 var Timefilter = React.createClass({
   propTypes: {
@@ -10,7 +11,7 @@ var Timefilter = React.createClass({
 
   getInitialState() {
     return {
-      selectedUnit: null,
+      selectedUnit: "m",
       selectedMode: "all",
       inputTime: "0"
     }
@@ -91,6 +92,9 @@ var Timefilter = React.createClass({
               <option value="M">months</option>
             </select>
           </div>
+          <ToggleDisplay show={this.state.inputTime <= 0}>
+				<div className="warning">*The value must be above zero.</div>
+          </ToggleDisplay>
         </div>
       </div>
     )

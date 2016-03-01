@@ -139,11 +139,9 @@ body {
   margin-top: 20px;
 }
 
-.menu .footer {
-  height: 16px;
-}
-.menu .footer.loadinggif {
-    background: url('http://www.hsi.com.hk/HSI-Net/pages/images/en/share/ajax-loader.gif') no-repeat;
+.menu-container .overlay {
+    background: grey url('../img/loading.gif') center center no-repeat !important;
+    opacity: .5;
 }
 
 /* Time filter */
@@ -160,4 +158,9 @@ body {
 /* Drop pin */
 .drop-pin {
   margin-left: 20px;
+}
+
+/* Others */
+.warning {
+  color: red;
 }
