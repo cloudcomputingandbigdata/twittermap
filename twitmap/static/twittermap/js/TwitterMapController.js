@@ -81,7 +81,10 @@ var TwitterMapController = React.createClass({
   showPin() {
     var self = this;
     var mapbox = this.props.mapbox;
-    this.pin = L.marker([40.71, -74.0059], {
+    var bounds = mapbox.getBounds();
+    var center = bounds.getCenter();
+    // console.log(center);
+    this.pin = L.marker(center, {
       icon: L.mapbox.marker.icon({
         'marker-color': '#f86767'
       }),
