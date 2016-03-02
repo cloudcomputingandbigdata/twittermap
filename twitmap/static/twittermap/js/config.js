@@ -1,7 +1,7 @@
 var config = {
 	map: {
-		accesstoken: "YOUR MAPBOX ACCESS TOKEN",
-		mapId: "YOUR MAP ID"
+		accesstoken: "pk.eyJ1IjoiaG91bGlhbmdsdiIsImEiOiJjaWwzMjNtcjEzbGdvdWdtM2c4bjNyeG1lIn0.fZxFewEvPi90HGANZnrkyA",
+		mapId: "houlianglv.p8o27ai7"
 	}
 };
 

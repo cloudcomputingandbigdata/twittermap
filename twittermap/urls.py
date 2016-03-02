@@ -22,5 +22,5 @@ urlpatterns = [
     url(r'^search/(?P<keyword>[A_Za-z0-9\s]*)$', views.search_by_keyword, name='search_by_keyword'),
     url(r'^scroll/(?P<sid>[\d\w]*)', views.scroll_results, name='scroll_results'),
     url(r'^test_search/(?P<keyword>[A_Za-z0-9\s]*)$', views.test_search, name='test_search'),
-    url(r'^twittermap/', include('twitmap.urls'))
+    url(r'^', include('twitmap.urls'))
 ]
