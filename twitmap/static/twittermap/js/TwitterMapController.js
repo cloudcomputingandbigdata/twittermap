@@ -94,6 +94,9 @@ var TwitterMapController = React.createClass({
   },
 
   loadResults(keyword, autoUpdate) {
+    if(!keyword || keyword.length === 0){
+      return;
+    }
     window.clearInterval(this.autoUpdateInterval);
     //stop the polling of loading from scroll id?
     var parameters = this.buildParameters();
