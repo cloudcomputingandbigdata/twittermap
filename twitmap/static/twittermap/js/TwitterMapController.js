@@ -5,6 +5,7 @@ var DropPin = require('./DropPin');
 var tweetLoader = require('./TweetLoader');
 var Menu = require('./Menu');
 var Accordion = require('./Accordion');
+var UpdateSetting = require('./UpdateSetting');
 
 var TwitterMapController = React.createClass({
   propTypes: {
@@ -19,10 +20,10 @@ var TwitterMapController = React.createClass({
       time: null,
       unit: "m",
       distance: 10,
-      show_pin: false,
+      isPinned: false,
       lat: null,
       lon: null,
-      updateFrequency: null
+      isAuto: false
     }
   },
 
@@ -31,9 +32,100 @@ var TwitterMapController = React.createClass({
     this.pin = null;
   },
 
-  componentDidUpdate() {
-    this.showTweetsOnMap();
-    return true;
+  showPin() {
+    var self = this;
+    var mapbox = this.props.mapbox;
+    var bounds = mapbox.getBounds();
+    var center = bounds.getCenter();
+    this.pin = L.marker(center, {
+      icon: L.mapbox.marker.icon({
+        'marker-color': '#f86767'
+      }),
+      draggable: true
+    }).addTo(mapbox);
+    this.pin.on('dragend', ondragend);
+    ondragend();
+
+    function ondragend() {
+        var m = self.pin.getLatLng();
+        console.log('Latitude: ' + m.lat + ', Longitude: ' + m.lng);
+        self.setState({
+          lat: m.lat,
+          lon: m.lng
+        }, function() {
+          if (self.state.keyword) {
+            self.loadResults(self.state.keyword, self.state.isAuto);
+          }
+        });
+    }
+  },
+
+  removePin() {
+    var mapbox = this.props.mapbox;
+    mapbox.removeLayer(this.pin);
+  },
+
+  
+
+  buildParameters() {
+    var parameters = {};
+    if (this.state.mode == 'all') {
+
+    } else {
+      var time = this.state.time;
+      var unit = this.state.unit;
+      if (time && unit && time > 0) {
+        parameters['from'] = "now-" + time + unit;
+        parameters['to'] = "now";
+      }
+    }
+
+    if (this.state.isPinned) {
+      var distance = this.state.distance;
+      var lat = this.state.lat;
+      var lon = this.state.lon;
+      if (distance && (lat && lon) && distance > 0) {
+        parameters['distance'] = distance + 'km';
+        parameters['lat'] = lat;
+        parameters['lon'] = lon;
+      }
+    }
+    return parameters;
+  },
+
+  loadResults(keyword, autoUpdate) {
+    window.clearInterval(this.autoUpdateInterval);
+    //stop the polling of loading from scroll id?
+    var parameters = this.buildParameters();
+    if(autoUpdate){
+      this.autoUpdateInterval = window.setInterval(this.__loadResult, 15000, keyword, parameters);
+    }
+    this.__loadResult(keyword, parameters);
+  },
+
+  __loadResult(keyword, parameters){
+    var that = this;
+    tweetLoader.loadByKeyword(keyword, parameters).done(function(data) {
+      console.log(data);
+      var tweets = [];
+      $('.menu').addClass("overlay");
+      (function pollingLoad(scrollId){
+        tweetLoader.scroll(scrollId).done(function(value){
+          console.log(value);
+          if (value.hits.length === 0) {
+            $('.menu').removeClass('overlay');
+            that.setState({
+              tweets: tweets
+            }, function(){
+              that.showTweetsOnMap();
+            });
+          } else {
+            tweets = tweets.concat(value.hits);
+            pollingLoad(scrollId);
+          }
+        });
+      })(data._scroll_id); 
+    });
   },
 
   showTweetsOnMap() {
@@ -78,169 +170,61 @@ var TwitterMapController = React.createClass({
 
   },
 
-  showPin() {
-    var self = this;
-    var mapbox = this.props.mapbox;
-    var bounds = mapbox.getBounds();
-    var center = bounds.getCenter();
-    // console.log(center);
-    this.pin = L.marker(center, {
-      icon: L.mapbox.marker.icon({
-        'marker-color': '#f86767'
-      }),
-      draggable: true
-    }).addTo(mapbox);
-    this.pin.on('dragend', ondragend);
-    ondragend();
-
-    function ondragend() {
-        var m = self.pin.getLatLng();
-        console.log('Latitude: ' + m.lat + ', Longitude: ' + m.lng);
-        self.setState({
-          lat: m.lat,
-          lon: m.lng
-        }, function() {
-          var parameters = {};
-          if (self.state.keyword) {
-            self.loadResults(self.state.keyword);
-          }
-        });
-    }
-  },
-
-  removePin() {
-    var mapbox = this.props.mapbox;
-    mapbox.removeLayer(this.pin);
-    this.loadResults(this.state.keyword);
-  },
-
   onFilterValueChanged(value) {
     console.log('value changed: ' + value);
-    var self = this;
-
-    this.setState({keyword: value}, function() {
-      //var updateFrequency = window.setInterval(function() {
-      self.loadResults(self.state.keyword);
-      //}, 10000);
+    this.setState({keyword: value}, function(){
+      this.loadResults(this.state.keyword, this.state.isAuto);
     });
-
-  },
-
-  buildParameters(parameters) {
-    if (this.state.mode == 'all') {
-
-    } else {
-      var time = this.state.time;
-      var unit = this.state.unit;
-      if (time && unit && time > 0) {
-        parameters['from'] = "now-" + time + unit;
-        parameters['to'] = "now";
-      }
-    }
-
-    //console.log('show_pin: ' + this.state.show_pin);
-    if (this.state.show_pin) {
-      var distance = this.state.distance;
-      var lat = this.state.lat;
-      var lon = this.state.lon;
-      //console.log('distance: ' + distance + ', lat: ' + lat + ', lon: ' + lon);
-      if (distance && (lat && lon) && distance > 0) {
-        parameters['distance'] = distance + 'km';
-        parameters['lat'] = lat;
-        parameters['lon'] = lon;
-      }
-    }
-  },
-
-  loadResults(keyword) {
-    var self = this;
-    var parameters = {};
-    if (self.state.keyword) {
-      if (this.state.updateFrequency != null) window.clearInterval(this.state.updateFrequency);
-      this.buildParameters(parameters);
-      this.state.updateFrequency = window.setInterval(function updateTweets() { // update every 15 seconds
-        tweetLoader.loadByKeyword(keyword, parameters).done(function(data) {
-          console.log(data);
-          var scroll_id = data._scroll_id;
-          var total = data.hits.total;
-          var tweets = [];
-          if (total > 0) {
-            $('.menu').addClass("overlay");
-            var intervalId = window.setInterval(function() { /*TODO: maybe should not use setInterval, since if the distance is huge, the search needs more time*/
-              tweetLoader.scroll(scroll_id).done(function(value) {
-                console.log(value);
-                if (value.hits.length === 0) {
-                  window.clearInterval(intervalId);
-                  $('.menu').removeClass('overlay');
-                  self.setState({
-                    tweets: tweets
-                  });
-                } else {
-                  tweets = tweets.concat(value.hits);
-                }
-              });
-            }, 200);
-          } else {
-            self.setState({
-              tweets: tweets
-            });
-          }
-        });
-        return updateTweets;
-      }(), 15000);
-    }
   },
 
   onTimeUnitValueChanged(value) {
     console.log('time unit changed:' + value);
-    var self = this;
-    this.setState({unit: value}, function() {
-      //var updateFrequency = window.setInterval(function() {
-      self.loadResults(self.state.keyword);
-      //}, 10000);
+    this.setState({unit: value}, function(){
+     this.loadResults(this.state.keyword, this.state.isAuto);
     });
   },
 
   onTimeChanged(value) {
     console.log('time changed:' + value);
-    var self = this;
-    this.setState({time: value}, function() {
-      //var updateFrequency = window.setInterval(function() {
-      if (value > 0)
-        self.loadResults(self.state.keyword);
-      //}, 10000);
+    this.setState({time: value}, function(){
+      if(value > 0){
+        this.loadResults(this.state.keyword, this.state.isAuto);
+      }
     });
   },
 
   onModeChanged(value) {
     console.log('mode changed:' + value);
-    var self = this;
-    this.setState({mode: value}, function() {
-      //var updateFrequency = window.setInterval(function() {
-      self.loadResults(self.state.keyword);
-      //}, 10000);
+    this.setState({mode: value}, function(){
+      this.loadResults(this.state.keyword, this.state.isAuto);
     });
   },
 
   onDistanceChanged(value) {
     console.log('distance changed:' + value);
-    var self = this;
-    this.setState({distance: value}, function() {
-      //var updateFrequency = window.setInterval(function() {
-      if (value > 0 && value <= 200)
-        self.loadResults(self.state.keyword);
-      //}, 10000);
+    this.setState({distance: value}, function(){
+      if(value <= 200 && value > 0){
+        this.loadResults(this.state.keyword, this.state.isAuto);
+      }
     });
   },
 
   onPinStatusChanged(value) {
     console.log('show pin? ' + value);
-    this.setState({show_pin: value}, function() {
-      if (value) {
-        this.showPin();
-      } else {
+    this.setState({isPinned: value}, function(){
+      if(this.pin && !this.state.isPinned){
         this.removePin();
+        this.pin = null;
+      }else if(!this.pin && this.state.isPinned){
+        this.showPin();
       }
+    });
+  },
+
+  onCheckAutoUpdate(isAuto){
+    console.log('auto update setting changed:' + isAuto);
+    this.setState({isAuto: isAuto}, function(){
+      this.loadResults(this.state.keyword, this.state.isAuto);
     });
   },
 
@@ -259,6 +243,11 @@ var TwitterMapController = React.createClass({
           <div className="drop-pin-container">
             <Accordion title={"Distance range filter"}>
               <DropPin onPinStatusChange = {this.onPinStatusChanged} onDistanceChange = {this.onDistanceChanged} />
+            </Accordion>
+          </div>
+          <div className="update-setting-container">
+            <Accordion title={"Tweets update setting"}>
+              <UpdateSetting onCheck={this.onCheckAutoUpdate} />
             </Accordion>
           </div>
         </Menu>
