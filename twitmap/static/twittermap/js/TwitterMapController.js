@@ -187,7 +187,8 @@ var TwitterMapController = React.createClass({
   onTimeUnitValueChanged(value) {
     console.log('time unit changed:' + value);
     this.setState({unit: value}, function(){
-     this.loadResults(this.state.keyword, this.state.isAuto);
+      if (this.state.time > 0)
+        this.loadResults(this.state.keyword, this.state.isAuto);
     });
   },
 
