@@ -63,6 +63,7 @@ var TwitterMapController = React.createClass({
   removePin() {
     var mapbox = this.props.mapbox;
     mapbox.removeLayer(this.pin);
+    this.loadResults(this.state.keyword, this.state.isAuto);
   },
 
   
