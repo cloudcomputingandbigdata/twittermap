@@ -13,7 +13,7 @@ var Accordion = React.createClass({
           <i className="icon dropdown"></i>
           {this.props.title}
         </div>
-        <div className="content field">
+        <div className="content field active">
           {this.props.children}
         </div>
       </div>

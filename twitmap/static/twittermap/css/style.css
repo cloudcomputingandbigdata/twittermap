@@ -69,7 +69,7 @@ body {
 }
 .menu-container > div.menu > .header {
   color: white;
-  background-color: #50c9f1;
+  background-color: #55acee;
   padding: 5px;
   margin-bottom: 10px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.4);
@@ -183,4 +183,46 @@ body {
 /* Others */
 .warning {
   color: red;
+}
+
+/* update setting */
+.update-setting{
+  margin-left: 20px;
+}
+
+/* applying button */
+.apply-btn{
+  position: relative;
+  left: 10px;
+  top: 10px;
+  margin-left: 20px;
+  cursor: pointer;
+  display: inline-block;
+  min-height: 1em;
+  outline: 0;
+  border: none;
+  vertical-align: baseline;
+  background: #e0e1e2;
+  font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+  margin: 0 .25em 0 0;
+  padding: .78571429em 1.5em;
+  text-transform: none;
+  font-weight: 700;
+  line-height: 1em;
+  font-style: normal;
+  text-align: center;
+  text-decoration: none;
+  border-radius: .28571429rem;
+  box-shadow: 0 0 0 1px transparent inset,0 0 0 0 rgba(34,36,38,.15) inset;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: opacity .1s ease,background-color .1s ease,color .1s ease,box-shadow .1s ease,background .1s ease;
+  transition: opacity .1s ease,background-color .1s ease,color .1s ease,box-shadow .1s ease,background .1s ease;
+  -webkit-tap-highlight-color: transparent;
+  background-color: #55acee;
+  color: #fff;
+  text-shadow: none;
+  background-image: none;
 }
