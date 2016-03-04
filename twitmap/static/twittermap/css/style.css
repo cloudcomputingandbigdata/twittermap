@@ -164,10 +164,13 @@ body {
     opacity: .5;
 }
 
-/* Time filter */
-.time-filter {
+.settings {
   margin-left: 20px;
 }
+/* Time filter */
+/*.time-filter {
+  margin-left: 20px;
+}*/
 .time-filter label span {
   margin-left: 5px;
 }
@@ -176,9 +179,9 @@ body {
 }
 
 /* Drop pin */
-.drop-pin {
+/*.drop-pin {
   margin-left: 20px;
-}
+}*/
 
 /* Others */
 .warning {
@@ -186,8 +189,13 @@ body {
 }
 
 /* update setting */
-.update-setting{
+/*.update-setting{
   margin-left: 20px;
+}*/
+
+/* Counter */
+.counter-container .stat-number {
+  color: blue;
 }
 
 /* applying button */

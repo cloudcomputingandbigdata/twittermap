@@ -29,7 +29,7 @@ var DropPin = React.createClass({
 
   render() {
     return (
-      <div className="drop-pin">
+      <div className="drop-pin settings">
         <div className="ui checkbox">
           <input value={this.state.show_pin} checked={this.state.show_pin} onClick={this.handleClick} type="checkbox" />
           <label>Drop a pin and show results within</label>
@@ -40,7 +40,7 @@ var DropPin = React.createClass({
             km
           </div>
         </div>
-        <ToggleDisplay show={this.state.distance <= 0 || this.state.distance > 200}>
+        <ToggleDisplay show={this.state.show_pin == true && (this.state.distance <= 0 || this.state.distance > 200)}>
           <div className="warning">*The value must be between 0 and 200.</div>
         </ToggleDisplay>
       </div>

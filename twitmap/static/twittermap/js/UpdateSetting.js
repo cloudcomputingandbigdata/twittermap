@@ -22,10 +22,10 @@ var UpdateSetting = React.createClass({
 
   render(){
     return (
-      <div className="update-setting">
+      <div className="update-setting settings">
         <div className="ui checkbox">
           <input value={this.state.isAuto} checked={this.state.isAuto} onClick={this.handleCheckAuto} type="checkbox" />
-          <label>Update Tweets Automatically</label>
+          <label>Update tweets automatically</label>
         </div>
       </div>
     );

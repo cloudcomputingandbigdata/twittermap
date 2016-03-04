@@ -6,6 +6,7 @@ var tweetLoader = require('./TweetLoader');
 var Menu = require('./Menu');
 var Accordion = require('./Accordion');
 var UpdateSetting = require('./UpdateSetting');
+var Counter = require('./Counter');
 
 var TwitterMapController = React.createClass({
   propTypes: {
@@ -23,7 +24,8 @@ var TwitterMapController = React.createClass({
       isPinned: false,
       lat: null,
       lon: null,
-      isAuto: false
+      isAuto: false,
+      number: 0
     }
   },
 
@@ -53,7 +55,7 @@ var TwitterMapController = React.createClass({
           lat: m.lat,
           lon: m.lng
         }, function() {
-          if (self.state.keyword) {
+          if (self.state.keyword && self.state.distance > 0 && self.state.distance <= 200) {
             self.loadResults(self.state.keyword, self.state.isAuto);
           }
         });
@@ -102,7 +104,7 @@ var TwitterMapController = React.createClass({
     //stop the polling of loading from scroll id?
     var parameters = this.buildParameters();
     if(autoUpdate){
-      this.autoUpdateInterval = window.setInterval(this.__loadResult, 15000, keyword, parameters);
+      this.autoUpdateInterval = window.setInterval(this.__loadResult, 30000, keyword, parameters);
     }
     this.__loadResult(keyword, parameters);
   },
@@ -111,6 +113,7 @@ var TwitterMapController = React.createClass({
     var that = this;
     tweetLoader.loadByKeyword(keyword, parameters).done(function(data) {
       console.log(data);
+      that.state.number = data.hits.total;
       var tweets = [];
       $('.menu').addClass("overlay");
       (function pollingLoad(scrollId){
@@ -200,6 +203,9 @@ var TwitterMapController = React.createClass({
   onModeChanged(value) {
     console.log('mode changed:' + value);
     this.setState({mode: value}, function(){
+      if (value != 'all' && this.state.time <= 0) {
+        return;
+      }
       this.loadResults(this.state.keyword, this.state.isAuto);
     });
   },
@@ -252,6 +258,11 @@ var TwitterMapController = React.createClass({
           <div className="update-setting-container">
             <Accordion title={"Tweets update setting"}>
               <UpdateSetting onCheck={this.onCheckAutoUpdate} />
+            </Accordion>
+          </div>
+          <div className="update-setting-container">
+            <Accordion title={"Statistics"}>
+              <Counter number={this.state.number} />
             </Accordion>
           </div>
         </Menu>

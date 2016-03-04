@@ -69,7 +69,7 @@ var Timefilter = React.createClass({
     });
     var selectedUnit = this.state.selectedUnit;
     return (
-      <div className="time-filter">
+      <div className="time-filter settings">
         <div>
           <label>
             <input type="radio" name="from_time" value="all" checked={this.state.selectedMode === "all"} onChange={this.handleMode} />
@@ -92,7 +92,7 @@ var Timefilter = React.createClass({
               <option value="M">months</option>
             </select>
           </div>
-          <ToggleDisplay show={this.state.inputTime <= 0}>
+          <ToggleDisplay show={this.state.inputTime <= 0 && this.state.selectedMode != 'all'}>
 				<div className="warning">*The value must be above zero.</div>
           </ToggleDisplay>
         </div>
