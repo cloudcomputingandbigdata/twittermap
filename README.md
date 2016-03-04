@@ -1,6 +1,6 @@
 # TwitterMap
 
-![shot](screen_shot.png)
+![shot](shot.png)
 
 ### AWS Demo
 View the [twitter map](http://twittmap.q3f5vtg5g3.us-west-2.elasticbeanstalk.com/) on beanstalk.
