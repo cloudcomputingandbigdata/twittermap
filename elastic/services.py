@@ -5,7 +5,11 @@ import sys
 class ElasticsearchServices:
 
     def __init__(self):
-        self.es = Elasticsearch([{'host': 'YOUR ELASTICSEARCH HOST', 'port': 9200}])
+        self.es = Elasticsearch(
+            ['ELASTICSEARCH HOST'],
+            http_auth=('USERNAME', 'PASSWORD'),
+            port='CONFIGURED PORT'
+        )
     
     # body should be in json format
     def feed_data(self, index, doc_type, body):
