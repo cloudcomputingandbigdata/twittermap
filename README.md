@@ -3,11 +3,11 @@
 ![shot](shot.png)
 
 ### AWS Demo
-View the [twitter map](http://twittmap.q3f5vtg5g3.us-west-2.elasticbeanstalk.com/) on beanstalk.
+View the [twitter map](http://twittmap.q3f5vtg5g3.us-west-2.elasticbeanstalk.com/) on beanstalk. The app is deployed by Elastic Beanstalk, while the streaming and Elasticsearch parts are on another instance. Nginx is used to prevent public access to Elasticsearch.
 
 ### Twitter Map
 
-- Get tweets from twitter Streaming API using pre-defined track words and store them to ElasticSearch engine.
+- Get tweets from twitter Streaming API using pre-defined track words and store them to Elasticsearch engine.
 - Use MapBox API to render these tweets on the map based on your configuration on control panel.
 - You should choose a keyword from the dropdown list to display only those tweets which contain the keyword.
 - You could filter the new tweets within last X minutes where X is your input.
@@ -15,7 +15,7 @@ View the [twitter map](http://twittmap.q3f5vtg5g3.us-west-2.elasticbeanstalk.com
 - You could choose to update tweets automatically.
 
 ### Stack
-- Elastic Search (tweet storage and search)
+- Elasticsearch (tweet storage and search)
 - Django (backend)
 - React (frontend)
 
