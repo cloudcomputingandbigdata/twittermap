@@ -5,7 +5,7 @@ import sys
 class ElasticsearchServices:
 
     def __init__(self):
-        self.es = Elasticsearch()
+        self.es = Elasticsearch([{'host': 'ec2-52-11-185-83.us-west-2.compute.amazonaws.com', 'port': 9200}])
     
     # body should be in json format
     def feed_data(self, index, doc_type, body):
