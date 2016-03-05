@@ -38,7 +38,7 @@ $ npm run build
 
 ##### Install Dependencies
 ```
-// sinstall dependencies with:
+// install dependencies with:
 $ pip install -r requirements.txt
 ```
 
