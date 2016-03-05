@@ -36,6 +36,12 @@ $ npm install
 $ npm run build
 ```
 
+##### Install Dependencies
+```
+// sinstall dependencies with:
+$ pip install -r requirements.txt
+```
+
 ##### Start server
 ```
 $ python manage.py runserver
